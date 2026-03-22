@@ -3,7 +3,7 @@ pipeline{
     stages{
         stage('Checkout'){
             steps{
-                git 'https://github.com/Sarthak-code786/devops-petclinic-cicd.git'
+                checkout scm
             }
         }
         stage('Build'){
