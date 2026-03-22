@@ -28,7 +28,8 @@ pipeline{
 
 stage('Docker Run') {
     steps {
-        sh 'docker rm -f petclinic || true'
+        sh 'docker ps -q --filter "publish=8080" | xargs -r docker stop'
+        sh 'docker ps -aq --filter "publish=8080" | xargs -r docker rm'
         sh 'docker run -d -p 8080:8080 --name petclinic sarthak786786/petclinic-app:latest'
     }
 }
