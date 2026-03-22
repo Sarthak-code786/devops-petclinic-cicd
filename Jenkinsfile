@@ -12,9 +12,14 @@ pipeline{
                 sh './mvnw clean package -DskipTests'
             }
         }
-        stage('Docker Build'){
+        stage('Docker Build & Push'){
             steps{
-                sh 'docker build -t petclinic-app .'
+                def DOCKERHUB_USERNAME = 'sarthak786786'
+                def DOCKERHUB_PASSWORD = 'Sarthak786'
+                def imageName = "${DOCKERHUB_USERNAME}/petclinic-app:latest"
+                sh 'docker build -t ${imageName} .'
+                sh 'docker login -u ${DOCKERHUB_USERNAME} -p ${DOCKERHUB_PASSWORD}'
+                sh 'docker push ${imageName}'
             }
         }
         stage('Doker Run'){
