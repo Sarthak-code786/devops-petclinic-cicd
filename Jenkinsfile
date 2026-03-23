@@ -15,10 +15,10 @@ pipeline{
         stage('SonarQube Analysis') {
             steps{
                 withCredentials([string(credentialsId: 'sonar-token', variable: 'SONAR_TOKEN')]) {
+                withEnv(["SONAR_HOST_URL=http://host.docker.internal:9000"]) {   
                     sh '''
                     chmod +x mvnw
                     ./mvnw sonar:sonar \
-                        -Dcheckstyle.skip=true \
                         -Dsonar.projectKey=petclinic-app \
                         -Dsonar.host.url=http://host.docker.internal:9000\
                         -Dsonar.login=$SONAR_TOKEN
@@ -26,6 +26,7 @@ pipeline{
                 }
             }
         }
+    }
         stage('Docker Build & Push') {
     steps {
         script {
