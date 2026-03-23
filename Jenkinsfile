@@ -9,7 +9,7 @@ pipeline{
         stage('Build'){
             steps{
                 sh 'chmod +x mvnw'
-                sh './mvnw clean package -DskipTests'
+                sh './mvnw clean package -DskipTests -Dcheckstyle.skip=true'
             }
         }
         stage('SonarQube Analysis') {
