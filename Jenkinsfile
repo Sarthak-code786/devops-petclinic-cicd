@@ -19,7 +19,7 @@ pipeline{
                     chmod +x mvnw
                     ./mvnw sonar:sonar \
                         -Dsonar.projectKey=petclinic-app \
-                        -Dsonar.host.url=http://localhost:9000 \
+                        -Dsonar.host.url=http://host.docker.internal:9000\
                         -Dsonar.login=$SONAR_TOKEN
                     '''
                 }
