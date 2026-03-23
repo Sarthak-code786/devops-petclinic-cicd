@@ -14,6 +14,7 @@ pipeline{
         }
         stage('SonarQube Analysis') {
             steps{
+                withSonarQubeEnv('sonar-server'){
                 withCredentials([string(credentialsId: 'sonar-token', variable: 'SONAR_TOKEN')]) {
                     sh '''
                     chmod +x mvnw
@@ -24,6 +25,15 @@ pipeline{
                     '''
                 }
             }
+        }
+    }
+        stage('Quality Gate') {
+            steps {
+                timeout(time: 2, unit: 'MINUTES') {
+                    waitForQualityGate abortPipeline: true
+                }
+            }
+
         }
         stage('Docker Build & Push') {
     steps {
