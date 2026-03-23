@@ -31,11 +31,11 @@ pipeline{
             def imageName = "sarthak786786/petclinic-app:latest"
 
             withCredentials([usernamePassword(credentialsId: 'docker-creds', usernameVariable: 'DOCKERHUB_USERNAME', passwordVariable: 'DOCKERHUB_PASSWORD')]) {
-            sh '''
+            sh """
             docker build -t ${imageName} .
             echo $DOCKERHUB_PASSWORD | docker login -u $DOCKERHUB_USERNAME --password-stdin
             docker push ${imageName}
-            '''
+            """
         }
     }
 }
