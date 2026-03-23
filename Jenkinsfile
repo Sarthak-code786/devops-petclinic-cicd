@@ -12,18 +12,33 @@ pipeline{
                 sh './mvnw clean package -DskipTests'
             }
         }
+        stage('SonarQube Analysis') {
+            steps{
+                withCredentials([string(credentialsId: 'sonar-token', variable: 'SONAR_TOKEN')]) {
+                    sh '''
+                    chmod +x mvnw
+                    ./mvnw sonar:sonar \
+                        -Dsonar.projectKey=petclinic-app \
+                        -Dsonar.host.url=http://localhost:9000 \
+                        -Dsonar.login=$SONAR_TOKEN
+                    '''
+                }
+            }
+        }
         stage('Docker Build & Push') {
     steps {
         script {
-            def DOCKERHUB_USERNAME = 'sarthak786786'
-            def DOCKERHUB_PASSWORD = 'Sarthak@786786'
-            def imageName = "${DOCKERHUB_USERNAME}/petclinic-app:latest"
+            def imageName = "sarthak786786/petclinic-app:latest"
 
-            sh "docker build -t ${imageName} ."
-            sh "docker login -u ${DOCKERHUB_USERNAME} -p ${DOCKERHUB_PASSWORD}"
-            sh "docker push ${imageName}"
+            withCredentials([usernamePassword(credentialsId: 'docker-creds', usernameVariable: 'DOCKERHUB_USERNAME', passwordVariable: 'DOCKERHUB_PASSWORD')]) {
+            sh '''
+            docker build -t ${imageName} .
+            echo $DOCKERHUB_PASSWORD | docker login -u $DOCKERHUB_USERNAME --password-stdin
+            docker push ${imageName}
+            '''
         }
     }
+}
 }
 
 stage('Docker Run') {
