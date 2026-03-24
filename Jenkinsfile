@@ -53,8 +53,15 @@ pipeline{
 
 stage('Docker Run') {
     steps {
-        sh 'docker rm -f petclinic || true'
-        sh 'docker run -d -p 8080:8080 --name petclinic sarthak786786/petclinic-app:latest'
+        sshagent(['ec2-ssh']){
+        sh '''
+        ssh -o StrictHostKeyChecking=no ubuntu@100.53.14.110 "
+        docker rm -f petclinic || true'
+        docker pull sarthak786786/petclinic-app:latest
+        docker run -d -p 8080:8080 --name petclinic sarthak786786/petclinic-app:latest'
+        "
+        '''
+    }
     }
 }
         
