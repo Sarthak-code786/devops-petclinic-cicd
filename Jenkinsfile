@@ -56,8 +56,8 @@ stage('Docker Run') {
         sshagent(['ec2-ssh']){
         sh '''
         ssh -o StrictHostKeyChecking=no ubuntu@100.53.14.110 "
-        docker rm -f petclinic || true'
-        docker pull sarthak786786/petclinic-app:latest
+        docker rm -f petclinic || true &&
+        docker pull sarthak786786/petclinic-app:latest &&
         docker run -d -p 8080:8080 --name petclinic sarthak786786/petclinic-app:latest'
         "
         '''
